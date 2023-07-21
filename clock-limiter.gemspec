@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary       = 'Clock-based rate limiter which resets when the clock second/minute/etc. changes.'
   spec.homepage      = 'https://github.com/leadsimple/clock-limiter'
   spec.license       = 'MIT'
-  spec.required_ruby_version = Gem::Requirement.new('>= 2.3.0')
+  spec.required_ruby_version = Gem::Requirement.new('>= 2.5.0')
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = 'https://github.com/leadsimple/clock-limiter'
