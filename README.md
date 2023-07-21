@@ -26,6 +26,8 @@ Or install it yourself as:
 
     $ gem install clock-limiter
 
+This gem requires Ruby >= 2.5.
+
 ## Usage
 
 First, you should configure this in a initializer such as `initializers/clock_limiter.rb`
