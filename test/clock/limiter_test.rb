@@ -41,7 +41,7 @@ class Clock::LimiterTest < Minitest::Test
     assert Clock::Limiter.configuration.time_provider
   end
 
-  def test_good_path
+  def test_good_path # rubocop:disable Metrics/MethodLength
     configure_gem
 
     failed_count = 0
@@ -65,7 +65,7 @@ class Clock::LimiterTest < Minitest::Test
     assert_equal 2, failed_count
   end
 
-  def test_with_clock_limiter_with_group_key
+  def test_with_clock_limiter_with_group_key # rubocop:disable Metrics/MethodLength
     configure_gem
 
     failed_groups = []

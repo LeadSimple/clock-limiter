@@ -129,7 +129,7 @@ module Clock
     # according to the [Clock::Limiter::Configuration#time_provider]
     #
     # @param [Clock::Limiter::Period] period
-    def current_period(period)
+    def current_period(period) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       case period
       when Period::SECOND
         Clock::Limiter.configuration.time_provider.call.sec

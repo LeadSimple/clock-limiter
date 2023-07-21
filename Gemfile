@@ -2,7 +2,11 @@
 
 source 'https://rubygems.org'
 
-gem 'rake', '~> 12.0'
+group :development, :test do
+  gem 'fakeredis', '~> 0.9'
+  gem 'minitest', '~> 5.0'
+  gem 'rake', '~> 12.0'
+end
 
 # Specify your gem's dependencies in clock-limiter.gemspec
 gemspec

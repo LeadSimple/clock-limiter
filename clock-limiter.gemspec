@@ -29,6 +29,4 @@ Gem::Specification.new do |spec|
 
   # Dependencies
   spec.add_runtime_dependency 'redis', '>= 3'
-  spec.add_development_dependency 'fakeredis', '~> 0.9'
-  spec.add_development_dependency 'minitest', '~> 5.0'
 end

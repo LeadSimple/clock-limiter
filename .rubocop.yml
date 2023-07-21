@@ -7,3 +7,4 @@ Style/ClassAndModuleChildren:
 # General config to enable every `Pendent` cop
 AllCops:
   NewCops: enable
+  TargetRubyVersion: 2.5
