@@ -63,9 +63,9 @@ module Clock
     # @raise [NoLimitsError] If no limits have been set
     # @raise [Clock::Limiter::Period::InvalidError] If an invalid period has been set
     def with_clock_limiter(limit_key = self.class.name)
-      raise NoLimitsError if self.class.clock_limits.nil? || self.class.clock_limits.empty?
+      raise NoLimitsError if fail_with_empty_limits?
 
-      self.class.clock_limits.each do |limit|
+      self.class.clock_limits&.each do |limit|
         next if within_limit?(limit, limit_key)
 
         return self.class.on_clock_limit_failure_block&.call(limit, limit_key)
@@ -75,6 +75,11 @@ module Clock
     end
 
     private
+
+    def fail_with_empty_limits?
+      Clock::Limiter.configuration.fail_with_empty_limits? &&
+        (self.class.clock_limits.nil? || self.class.clock_limits.empty?)
+    end
 
     # Increments the value of the key and returns true if the limit has not
     # been reached. If the limit has been reached, false will be returned.

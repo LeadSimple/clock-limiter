@@ -14,6 +14,7 @@ module Clock
         @redis = redis
       end
 
+      # @return [::Redis]
       def redis
         raise ConfigurationError, 'Redis not configured' if @redis.nil?
 
@@ -27,10 +28,27 @@ module Clock
         @time_provider = time_provider
       end
 
+      # @return [Proc]
       def time_provider
         raise ConfigurationError, 'Time provider not configured' if @time_provider.nil?
 
         @time_provider
+      end
+
+      # @param fail_with_empty_limits [Boolean]
+      def fail_with_empty_limits=(fail_with_empty_limits)
+        unless [true, false].include?(fail_with_empty_limits)
+          raise ConfigurationError, '`fail_with_empty_limits` must be a boolean'
+        end
+
+        @fail_with_empty_limits = fail_with_empty_limits
+      end
+
+      # @return [Boolean] - true by default
+      def fail_with_empty_limits?
+        return @fail_with_empty_limits unless @fail_with_empty_limits.nil?
+
+        true
       end
     end
   end

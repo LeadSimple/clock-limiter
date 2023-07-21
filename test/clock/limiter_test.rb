@@ -91,12 +91,47 @@ class Clock::LimiterTest < Minitest::Test
     assert_equal ['key_b'], failed_groups
   end
 
+  def test_fails_with_empty_limit
+    configure_gem
+
+    my_class = Class.new do
+      include Clock::Limiter
+
+      def call
+        with_clock_limiter {}
+      end
+    end
+
+    assert_raises(Clock::Limiter::NoLimitsError) { my_class.new.call }
+  end
+
+  def test_doesnt_fail_with_empty_limit_if_properly_configured # rubocop:disable Metrics/MethodLength
+    configure_gem
+
+    Clock::Limiter.configure do |config|
+      config.fail_with_empty_limits = false
+    end
+
+    my_class = Class.new do
+      include Clock::Limiter
+
+      def call
+        with_clock_limiter {}
+      end
+    end
+
+    my_class.new.call
+
+    assert true
+  end
+
   private
 
   def configure_gem
     Clock::Limiter.configure do |config|
       config.redis = Redis.new
       config.time_provider = -> { Time.now }
+      config.fail_with_empty_limits = true
     end
   end
 end
