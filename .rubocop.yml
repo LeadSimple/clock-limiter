@@ -1,0 +1,9 @@
+Style/Documentation:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+# General config to enable every `Pendent` cop
+AllCops:
+  NewCops: enable
