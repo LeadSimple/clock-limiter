@@ -85,7 +85,7 @@ The available periods are
 
 ### Advanced Usage
 
-`with_clock_limiter` accepts an optional argument called `group_key` which can be used if you don't want the rate limit to be global across the class, but want it to be based on a specific key instead - if you have different rate limits, for different accounts, this might be your usage.
+`with_clock_limiter` accepts an optional argument called `limit_key` which can be used if you don't want the rate limit to be global across the class, but want it to be based on a specific key instead - if you have different rate limits, for different accounts, this might be what you need.
 
 ```ruby
 class Limited
@@ -93,8 +93,8 @@ class Limited
 
   add_clock_limit(period: Clock::Limiter::Period::MINUTE, limit: 10)
 
-  on_clock_limit_failure do |limit, group_key|
-    puts "Limit #{limit} for key #{group_key} reached!"
+  on_clock_limit_failure do |limit, limit_key|
+    puts "Limit #{limit} for key #{limit_key} reached!"
   end
 
   def call

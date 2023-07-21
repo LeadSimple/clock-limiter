@@ -57,18 +57,18 @@ module Clock
     # If the limit has not been reached, the block passed to this method will
     # be called.
     #
-    # @param [String] group_key Optional group key if this limit is not global to the class
+    # @param [String] limit_key Optional group key if this limit is not global to the class
     # @yield
     # @return [Object] The return value of the block passed to this method
     # @raise [NoLimitsError] If no limits have been set
     # @raise [Clock::Limiter::Period::InvalidError] If an invalid period has been set
-    def with_clock_limiter(group_key = '_')
+    def with_clock_limiter(limit_key = self.class.name)
       raise NoLimitsError if self.class.clock_limits.nil? || self.class.clock_limits.empty?
 
       self.class.clock_limits.each do |limit|
-        next if within_limit?(limit, group_key)
+        next if within_limit?(limit, limit_key)
 
-        return self.class.on_clock_limit_failure_block&.call(limit, group_key)
+        return self.class.on_clock_limit_failure_block&.call(limit, limit_key)
       end
 
       yield
@@ -80,9 +80,9 @@ module Clock
     # been reached. If the limit has been reached, false will be returned.
     #
     # @param [Clock::Limiter::Limit] limit
-    # @param [String] group_key
-    def within_limit?(limit, group_key)
-      key, ttl = key_and_ttl(limit, group_key)
+    # @param [String] limit_key
+    def within_limit?(limit, limit_key)
+      key, ttl = key_and_ttl(limit, limit_key)
 
       value = Clock::Limiter.configuration.redis.incr(key)
       return false if value > limit.limit
@@ -96,21 +96,21 @@ module Clock
     # Returns the key and ttl for the given limit and group key.
     #
     # @param [Clock::Limiter::Limit] limit
-    # @param [String] group_key
-    def key_and_ttl(limit, group_key) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    # @param [String] limit_key
+    def key_and_ttl(limit, limit_key) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       case limit.period
       when Period::SECOND
-        [key(limit.period, group_key), 1]
+        [key(limit.period, limit_key), 1]
       when Period::MINUTE
-        [key(limit.period, group_key), 60] # 1 * 60
+        [key(limit.period, limit_key), 60] # 1 * 60
       when Period::HOUR
-        [key(limit.period, group_key), 3_600] # 1 * 60 * 60
+        [key(limit.period, limit_key), 3_600] # 1 * 60 * 60
       when Period::DAY
-        [key(limit.period, group_key), 86_400] # 1 * 60 * 60 * 24
+        [key(limit.period, limit_key), 86_400] # 1 * 60 * 60 * 24
       when Period::MONTH
-        [key(limit.period, group_key), 2_678_400] # 1 * 60 * 60 * 24 * 31 (worst case, 31 days)
+        [key(limit.period, limit_key), 2_678_400] # 1 * 60 * 60 * 24 * 31 (worst case, 31 days)
       when Period::YEAR
-        [key(limit.period, group_key), 31_622_400] # 1 * 60 * 60 * 24 * 366 (worst case, 366 days)
+        [key(limit.period, limit_key), 31_622_400] # 1 * 60 * 60 * 24 * 366 (worst case, 366 days)
       else
         raise Period::InvalidError(limit.period)
       end
@@ -119,9 +119,9 @@ module Clock
     # Returns the key for the given period and group key.
     #
     # @param [Clock::Limiter::Period] period
-    # @param [String] group_key
-    def key(period, group_key)
-      "clock-limiter:#{self.class.name}:#{period}:#{current_period(period)}:#{group_key}"
+    # @param [String] limit_key
+    def key(period, limit_key)
+      "clock-limiter:#{limit_key}:#{period}:#{current_period(period)}"
     end
 
     # Returns the current period for the given period.
