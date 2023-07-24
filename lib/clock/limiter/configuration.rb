@@ -7,14 +7,22 @@ module Clock
     class Configuration
       class ConfigurationError < StandardError; end
 
-      # @param redis [::Redis]
+      # We want to guarantee we are only using valid Redis instances.
+      # We could restrict to a `::Redis` instance, but that's not always
+      # worth it, because we might need to use a Redis client that is not
+      # a `::Redis` instance - such as `MockRedis` for example
+      def self.valid_redis?(redis)
+        redis.respond_to?(:incr) && redis.respond_to?(:expire)
+      end
+
+      # @param redis [::Redis-like]
       def redis=(redis)
-        raise ConfigurationError, '`redis` must be a `::Redis` instance' unless redis.is_a?(::Redis)
+        raise ConfigurationError, '`redis` must implement `#incr` and `#expire`' unless valid_redis?(redis)
 
         @redis = redis
       end
 
-      # @return [::Redis]
+      # @return [::Redis-like]
       def redis
         raise ConfigurationError, 'Redis not configured' if @redis.nil?
 

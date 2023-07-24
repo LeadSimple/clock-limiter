@@ -34,7 +34,7 @@ First, you should configure this in a initializer such as `initializers/clock_li
 
 ```ruby
 Clock::Limiter.configure do |config|
-  config.redis = Redis.new               # Must be a Redis instance
+  config.redis = Redis.new               # Must be something that implements `#get` and `#expire`
   config.time_provider = -> { Time.now } # Must return a Time instance
 end
 ```
