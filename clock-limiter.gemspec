@@ -2,7 +2,7 @@
 
 require_relative 'lib/clock/limiter/version'
 
-Gem::Specification.new do |spec|
+Gem::Specification.new do |spec| # rubocop:disable Gemspec/RequireMFA because we want to deploy this through the GitHub Actions workflow
   spec.name          = 'clock-limiter'
   spec.version       = Clock::Limiter::VERSION
   spec.authors       = ['Rafael Baldasso Audibert']
@@ -25,5 +25,4 @@ Gem::Specification.new do |spec|
   spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
-  spec.metadata['rubygems_mfa_required'] = 'true'
 end
