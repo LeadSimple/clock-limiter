@@ -17,7 +17,7 @@ module Clock
 
       # @param redis [::Redis-like]
       def redis=(redis)
-        raise ConfigurationError, '`redis` must implement `#incr` and `#expire`' unless valid_redis?(redis)
+        raise ConfigurationError, '`redis` must implement `#incr` and `#expire`' unless self.class.valid_redis?(redis)
 
         @redis = redis
       end
